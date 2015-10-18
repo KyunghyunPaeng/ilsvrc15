@@ -1,0 +1,28 @@
+
+# The train/test net protocol buffer definition
+# train.txt -> # patches = 5011840
+# val.txt   -> # patches = 479232
+
+
+##### All iteration parameters are computed by this configuration !! #####
+##                                                                   #####
+##        train -> # mini-batch = 128 * 2 gpus = 256                 #####
+##        test  -> # mini-batch =  64 * 1 gpu  =  64                 #####
+##                                                                   #####
+##########################################################################
+
+net: "0__MODELS/bvlc_googlenet/lr_poly/train.prototxt"
+test_iter: 7488
+test_initialization: false
+test_interval: 3916 # 20% iter point (i.e. 2 epoch)
+test_attention: true
+base_lr: 0.01
+momentum: 0.9
+weight_decay: 0.0002
+lr_policy: "poly"
+power: 0.5
+display: 20
+max_iter: 19580
+snapshot: 3916
+snapshot_prefix: "0__MODELS/bvlc_googlenet/lr_poly/ft_models/attention_voc_07"
+solver_mode: GPU
