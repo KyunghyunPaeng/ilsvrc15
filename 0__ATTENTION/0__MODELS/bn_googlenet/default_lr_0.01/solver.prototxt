@@ -11,7 +11,7 @@
 ##                                                                   #####
 ##########################################################################
 
-net: "0__MODELS/bn_googlenet/default/train.prototxt"
+net: "0__MODELS/bn_googlenet/default_lr_0.01/train.prototxt"
 test_iter: 14976
 test_initialization: false
 test_interval: 9790 # 50% iter point (i.e. 5 epoch)
@@ -25,5 +25,5 @@ stepsize: 15664 # (i.e. 8 epoch)
 display: 20
 max_iter: 19580
 snapshot: 1958
-snapshot_prefix: "0__MODELS/bn_googlenet/default/ft_models/attention_voc_07"
+snapshot_prefix: "0__MODELS/bn_googlenet/default_lr_0.01/ft_models/attention_voc_07"
 solver_mode: GPU
