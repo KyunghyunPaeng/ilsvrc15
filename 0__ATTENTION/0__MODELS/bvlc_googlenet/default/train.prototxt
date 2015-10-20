@@ -55,7 +55,7 @@ layer {
     mean_value: 117
     mean_value: 123
     cache_images: false
-    root_folder: "/data/PASCAL/VOCdevkit/VOC2007/"
+    root_folder: "/data1/PASCAL/VOCdevkit/VOC2007/"
   }
 }
 
@@ -116,7 +116,7 @@ layer {
     mean_value: 117
     mean_value: 123
     cache_images: false
-    root_folder: "/data/PASCAL/VOCdevkit/VOC2007/"
+    root_folder: "/data1/PASCAL/VOCdevkit/VOC2007/"
   }
 }
 
