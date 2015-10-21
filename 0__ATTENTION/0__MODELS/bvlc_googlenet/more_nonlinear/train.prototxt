@@ -2066,11 +2066,19 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 64
+    num_output: 512
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
   }
 }
 
@@ -2082,67 +2090,9 @@ layer {
 }
 
 layer {
-  name: "conv7"
-  type: "Convolution"
-  bottom: "conv6"
-  top: "conv7"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 128
-    pad: 0
-    kernel_size: 1
-    group: 1
-    stride: 1
-  }
-}
-
-layer {
-  name: "conv7_relu"
-  type: "ReLU"
-  bottom: "conv7"
-  top: "conv7"
-}
-
-layer {
-  name: "conv8"
-  type: "Convolution"
-  bottom: "conv7"
-  top: "conv8"
-  param {
-    lr_mult: 1
-    decay_mult: 1
-  }
-  param {
-    lr_mult: 2
-    decay_mult: 0
-  }
-  convolution_param {
-    num_output: 256
-    pad: 0
-    kernel_size: 1
-    group: 1
-    stride: 1
-  }
-}
-
-layer {
-  name: "conv8_relu"
-  type: "ReLU"
-  bottom: "conv8"
-  top: "conv8"
-}
-
-layer {
   name: "dir0_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir0_TL"
   param {
     lr_mult: 1
@@ -2169,7 +2119,7 @@ layer {
 layer {
   name: "dir0_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir0_BR"
   param {
     lr_mult: 1
@@ -2196,7 +2146,7 @@ layer {
 layer {
   name: "dir1_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir1_TL"
   param {
     lr_mult: 1
@@ -2223,7 +2173,7 @@ layer {
 layer {
   name: "dir1_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir1_BR"
   param {
     lr_mult: 1
@@ -2250,7 +2200,7 @@ layer {
 layer {
   name: "dir2_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir2_TL"
   param {
     lr_mult: 1
@@ -2277,7 +2227,7 @@ layer {
 layer {
   name: "dir2_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir2_BR"
   param {
     lr_mult: 1
@@ -2304,7 +2254,7 @@ layer {
 layer {
   name: "dir3_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir3_TL"
   param {
     lr_mult: 1
@@ -2331,7 +2281,7 @@ layer {
 layer {
   name: "dir3_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir3_BR"
   param {
     lr_mult: 1
@@ -2358,7 +2308,7 @@ layer {
 layer {
   name: "dir4_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir4_TL"
   param {
     lr_mult: 1
@@ -2385,7 +2335,7 @@ layer {
 layer {
   name: "dir4_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir4_BR"
   param {
     lr_mult: 1
@@ -2412,7 +2362,7 @@ layer {
 layer {
   name: "dir5_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir5_TL"
   param {
     lr_mult: 1
@@ -2439,7 +2389,7 @@ layer {
 layer {
   name: "dir5_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir5_BR"
   param {
     lr_mult: 1
@@ -2466,7 +2416,7 @@ layer {
 layer {
   name: "dir6_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir6_TL"
   param {
     lr_mult: 1
@@ -2493,7 +2443,7 @@ layer {
 layer {
   name: "dir6_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir6_BR"
   param {
     lr_mult: 1
@@ -2520,7 +2470,7 @@ layer {
 layer {
   name: "dir7_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir7_TL"
   param {
     lr_mult: 1
@@ -2547,7 +2497,7 @@ layer {
 layer {
   name: "dir7_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir7_BR"
   param {
     lr_mult: 1
@@ -2574,7 +2524,7 @@ layer {
 layer {
   name: "dir8_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir8_TL"
   param {
     lr_mult: 1
@@ -2601,7 +2551,7 @@ layer {
 layer {
   name: "dir8_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir8_BR"
   param {
     lr_mult: 1
@@ -2628,7 +2578,7 @@ layer {
 layer {
   name: "dir9_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir9_TL"
   param {
     lr_mult: 1
@@ -2655,7 +2605,7 @@ layer {
 layer {
   name: "dir9_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir9_BR"
   param {
     lr_mult: 1
@@ -2682,7 +2632,7 @@ layer {
 layer {
   name: "dir10_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir10_TL"
   param {
     lr_mult: 1
@@ -2709,7 +2659,7 @@ layer {
 layer {
   name: "dir10_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir10_BR"
   param {
     lr_mult: 1
@@ -2736,7 +2686,7 @@ layer {
 layer {
   name: "dir11_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir11_TL"
   param {
     lr_mult: 1
@@ -2763,7 +2713,7 @@ layer {
 layer {
   name: "dir11_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir11_BR"
   param {
     lr_mult: 1
@@ -2790,7 +2740,7 @@ layer {
 layer {
   name: "dir12_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir12_TL"
   param {
     lr_mult: 1
@@ -2817,7 +2767,7 @@ layer {
 layer {
   name: "dir12_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir12_BR"
   param {
     lr_mult: 1
@@ -2844,7 +2794,7 @@ layer {
 layer {
   name: "dir13_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir13_TL"
   param {
     lr_mult: 1
@@ -2871,7 +2821,7 @@ layer {
 layer {
   name: "dir13_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir13_BR"
   param {
     lr_mult: 1
@@ -2898,7 +2848,7 @@ layer {
 layer {
   name: "dir14_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir14_TL"
   param {
     lr_mult: 1
@@ -2925,7 +2875,7 @@ layer {
 layer {
   name: "dir14_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir14_BR"
   param {
     lr_mult: 1
@@ -2952,7 +2902,7 @@ layer {
 layer {
   name: "dir15_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir15_TL"
   param {
     lr_mult: 1
@@ -2979,7 +2929,7 @@ layer {
 layer {
   name: "dir15_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir15_BR"
   param {
     lr_mult: 1
@@ -3006,7 +2956,7 @@ layer {
 layer {
   name: "dir16_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir16_TL"
   param {
     lr_mult: 1
@@ -3033,7 +2983,7 @@ layer {
 layer {
   name: "dir16_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir16_BR"
   param {
     lr_mult: 1
@@ -3060,7 +3010,7 @@ layer {
 layer {
   name: "dir17_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir17_TL"
   param {
     lr_mult: 1
@@ -3087,7 +3037,7 @@ layer {
 layer {
   name: "dir17_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir17_BR"
   param {
     lr_mult: 1
@@ -3114,7 +3064,7 @@ layer {
 layer {
   name: "dir18_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir18_TL"
   param {
     lr_mult: 1
@@ -3141,7 +3091,7 @@ layer {
 layer {
   name: "dir18_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir18_BR"
   param {
     lr_mult: 1
@@ -3168,7 +3118,7 @@ layer {
 layer {
   name: "dir19_TL"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir19_TL"
   param {
     lr_mult: 1
@@ -3195,7 +3145,7 @@ layer {
 layer {
   name: "dir19_BR"
   type: "Convolution"
-  bottom: "conv8"
+  bottom: "conv6"
   top: "dir19_BR"
   param {
     lr_mult: 1
