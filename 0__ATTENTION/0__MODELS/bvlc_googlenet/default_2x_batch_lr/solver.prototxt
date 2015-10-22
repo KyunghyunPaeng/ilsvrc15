@@ -16,7 +16,7 @@ test_iter: 7488
 test_initialization: false
 test_interval: 4895 # 50% iter point (i.e. 5 epoch)
 test_attention: true
-base_lr: 0.005
+base_lr: 0.007
 momentum: 0.9
 weight_decay: 0.0005
 lr_policy: "step"
