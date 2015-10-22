@@ -6,23 +6,24 @@
 
 ##### All iteration parameters are computed by this configuration !! #####
 ##                                                                   #####
-##        train -> # mini-batch = 128 * 2 gpus = 256                 #####
+##        train -> # mini-batch =  64 * 4 gpus = 256                 #####
 ##        test  -> # mini-batch =  64 * 1 gpu  =  64                 #####
 ##                                                                   #####
 ##########################################################################
 
-net: "0__MODELS/bvlc_googlenet/lr_poly_wc/train.prototxt"
-test_iter: 7488
+net: "0__MODELS/bvlc_googlenet/default_wc/train.prototxt"
+test_iter: 14976
 test_initialization: false
-test_interval: 3916 # 20% iter point (i.e. 2 epoch)
+test_interval: 9790 # (i.e. 5 epoch)
 test_attention: true
 base_lr: 0.01
 momentum: 0.9
-weight_decay: 0.0005
-lr_policy: "poly"
-power: 0.5
+weight_decay: 0.0002
+lr_policy: "step"
+gamma: 0.1
+stepsize: 15664 # 8 epoch
 display: 20
 max_iter: 19580
-snapshot: 3916
-snapshot_prefix: "0__MODELS/bvlc_googlenet/lr_poly_wc/ft_models/attention_voc_07"
+snapshot: 1958
+snapshot_prefix: "0__MODELS/bvlc_googlenet/default_wc/ft_models/attention_voc_07"
 solver_mode: GPU

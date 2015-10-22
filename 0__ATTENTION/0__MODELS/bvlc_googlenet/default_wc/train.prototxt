@@ -48,7 +48,7 @@ layer {
   }
   attention_data_param {
     source: "1__DATA/PASCAL/train.txt"
-    batch_size: 128
+    batch_size: 64
     num_class: 20
     input_size: 224
     mean_value: 104
@@ -109,7 +109,7 @@ layer {
   }
   attention_data_param {
     source: "1__DATA/PASCAL/val.txt"
-    batch_size: 64
+    batch_size: 32
     num_class: 20
     input_size: 224
     mean_value: 104
