@@ -1,0 +1,30 @@
+
+# The train/test net protocol buffer definition
+# train.txt -> # patches = 196895680
+# val.txt   -> # patches = 2575264
+
+
+##### All iteration parameters are computed by this configuration !! #####
+##                                                                   #####
+##        train -> # mini-batch = 64 * 4 gpus = 256                  #####
+##        test  -> # mini-batch = 64 * 1 gpu  =  64                  #####
+##                                                                   #####
+##########################################################################
+
+net: "0__MODELS/bvlc_googlenet/imagenet_loc_default/train.prototxt"
+test_iter: 40238
+test_initialization: false
+test_interval: 153826 # 20% iter point (i.e. 2 epoch)
+test_attention: true
+base_lr: 0.01
+momentum: 0.9
+weight_decay: 0.0005
+lr_policy: "step"
+gamma: 0.1
+stepsize: 615304 # 80% iter point (i.e. 8 epoch)
+display: 20
+max_iter: 769130
+snapshot: 153826
+snapshot_prefix: "0__MODELS/bvlc_googlenet/imagenet_loc_default/ft_models/attention_imagenet_det_15"
+solver_mode: GPU
+
