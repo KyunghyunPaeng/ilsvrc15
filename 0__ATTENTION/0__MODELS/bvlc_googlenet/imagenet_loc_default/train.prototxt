@@ -2008,7 +2008,7 @@ layer {
   }
   attention_data_param {
     source: "1__DATA/IMAGENET/LOC/train.txt"
-    batch_size: 64
+    batch_size: 128
     num_class: 1000
     input_size: 224
     mean_value: 104
@@ -4030,7 +4030,7 @@ layer {
   }
   attention_data_param {
     source: "1__DATA/IMAGENET/LOC/val.txt"
-    batch_size: 64
+    batch_size: 32
     num_class: 1000
     input_size: 224
     mean_value: 104
