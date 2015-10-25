@@ -14,16 +14,16 @@
 net: "0__MODELS/bvlc_googlenet/imagenet_loc_default/train.prototxt"
 test_iter: 40238
 test_initialization: false
-test_interval: 400000 # no test !
+test_interval: 200000 # no test !
 test_attention: true
 base_lr: 0.01
 momentum: 0.9
 weight_decay: 0.0005
 lr_policy: "step"
 gamma: 0.1
-stepsize: 307648 # 80% iter point (i.e. 8 epoch)
+stepsize: 153824 # 80% iter point (i.e. 4 epoch)
 display: 20
-max_iter: 384560
+max_iter: 192280 # 5 epoch
 snapshot: 38456
 snapshot_prefix: "0__MODELS/bvlc_googlenet/imagenet_loc_default/ft_models/attention_imagenet_loc_15"
 solver_mode: GPU
