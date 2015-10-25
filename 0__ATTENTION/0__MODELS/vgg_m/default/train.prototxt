@@ -335,7 +335,7 @@ layer {
 layer {
   name: "conv6"
   type: "Convolution"
-  bottom: "pool2"
+  bottom: "pool5"
   top: "conv6"
   param {
     lr_mult: 0.25
@@ -348,7 +348,7 @@ layer {
   convolution_param {
     num_output: 4096
     pad: 0
-    kernel_size: 1
+    kernel_size: 6
     group: 1
     stride: 1
   }
@@ -371,7 +371,7 @@ layer {
 layer {
   name: "conv7"
   type: "Convolution"
-  bottom: "conv3"
+  bottom: "conv6"
   top: "conv7"
   param {
     lr_mult: 0.25
