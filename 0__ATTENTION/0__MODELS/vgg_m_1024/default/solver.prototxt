@@ -1,0 +1,29 @@
+
+# The train/test net protocol buffer definition
+# train.txt -> # patches = 5011840
+# val.txt   -> # patches = 479232
+
+
+##### All iteration parameters are computed by this configuration !! #####
+##                                                                   #####
+##        train -> # mini-batch = 128 * 4 gpus = 512                 #####
+##        test  -> # mini-batch =  32 * 1 gpu  =  32                #####
+##                                                                   #####
+##########################################################################
+
+net: "0__MODELS/vgg_m_1024/default/train.prototxt"
+test_iter: 14976
+test_initialization: false
+test_interval: 9790 # 50% iter point (i.e. 5 epoch)
+test_attention: true
+base_lr: 0.01
+momentum: 0.9
+weight_decay: 0.0005
+lr_policy: "step"
+gamma: 0.1
+stepsize: 7832 # 80% iter point (i.e. 8 epoch)
+display: 20
+max_iter: 9790
+snapshot: 979
+snapshot_prefix: "0__MODELS/vgg_m_1024/default/ft_models/attention_voc_07"
+solver_mode: GPU
