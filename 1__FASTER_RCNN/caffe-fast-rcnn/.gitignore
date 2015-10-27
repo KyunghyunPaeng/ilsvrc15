@@ -50,17 +50,44 @@
 # OSX dir files
 .DS_Store
 
-## Model files
+## Caffe
+
+# User's build configuration
+Makefile.config
 
 # Data and models are either
 # 1. reference, and not casually committed
 # 2. custom, and live on their own unless they're deliberated contributed
-0__ATTENTION/1__DATA/*/*
+data/*
+models/*
 *.caffemodel
-*.caffemodel.h5
 *.solverstate
-*.solverstate.h5
 *.binaryproto
 *leveldb
 *lmdb
 
+# build, distribute, and bins (+ python proto bindings)
+build
+.build_debug/*
+.build_release/*
+distribute/*
+*.testbin
+*.bin
+python/caffe/proto/
+cmake_build
+.cmake_build
+
+# Generated documentation
+docs/_site
+docs/gathered
+_site
+doxygen
+docs/dev
+
+# LevelDB files
+*.sst
+*.ldb
+LOCK
+LOG*
+CURRENT
+MANIFEST-*
