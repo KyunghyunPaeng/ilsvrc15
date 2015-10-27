@@ -97,21 +97,36 @@ class imdb(object):
 
     def append_flipped_images(self):
         num_images = self.num_images
-        widths = [PIL.Image.open(self.image_path_at(i)).size[0]
-                  for i in xrange(num_images)]
+        #widths = [PIL.Image.open(self.image_path_at(i)).size[0]
+        #          for i in xrange(num_images)]
+        #widths = [self.load_image_wh(index)[0]
+        #          for index in self._image_index]
         for i in xrange(num_images):
             boxes = self.roidb[i]['boxes'].copy()
             oldx1 = boxes[:, 0].copy()
             oldx2 = boxes[:, 2].copy()
-            boxes[:, 0] = widths[i] - oldx2 - 1
-            boxes[:, 2] = widths[i] - oldx1 - 1
+            boxes[:, 0] = self._wh[i][0] - oldx2 - 1
+            boxes[:, 2] = self._wh[i][0] - oldx1 - 1
+            #boxes[:, 0] = widths[i] - oldx2 - 1
+            #boxes[:, 2] = widths[i] - oldx1 - 1
+            #print '============================'
+            #print self._image_index[i]
+            #print i
+            #print widths[i]
+            #print oldx1
+            #print oldx2
+            #print boxes[:,0]
+            #print boxes[:,2]
             assert (boxes[:, 2] >= boxes[:, 0]).all()
             entry = {'boxes' : boxes,
                      'gt_overlaps' : self.roidb[i]['gt_overlaps'],
                      'gt_classes' : self.roidb[i]['gt_classes'],
                      'flipped' : True}
             self.roidb.append(entry)
+            if i%10000 is 0 :
+                print '{} th image is flipped...{}'.format(i+1, num_images)
         self._image_index = self._image_index * 2
+        self._wh = self._wh * 2
 
     def evaluate_recall(self, candidate_boxes=None, ar_thresh=0.5):
         # Record max overlap value for each gt box

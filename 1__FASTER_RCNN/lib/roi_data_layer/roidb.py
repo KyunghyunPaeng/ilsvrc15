@@ -20,8 +20,11 @@ def prepare_roidb(imdb):
     each ground-truth box. The class with maximum overlap is also
     recorded.
     """
-    sizes = [PIL.Image.open(imdb.image_path_at(i)).size
-             for i in xrange(imdb.num_images)]
+    #sizes = [PIL.Image.open(imdb.image_path_at(i)).size
+    #         for i in xrange(imdb.num_images)]
+    #sizes = [imdb.load_image_wh(index)
+    #         for index in imdb._image_index]
+    sizes = imdb._wh
     roidb = imdb.roidb
     for i in xrange(len(imdb.image_index)):
         roidb[i]['image'] = imdb.image_path_at(i)
@@ -42,6 +45,8 @@ def prepare_roidb(imdb):
         # max overlap > 0 => class should not be zero (must be a fg class)
         nonzero_inds = np.where(max_overlaps > 0)[0]
         assert all(max_classes[nonzero_inds] != 0)
+        if i % 10000 is 0 :
+            print '{} th image is prepared... {}'.format(i+1,len(imdb.image_index))
 
 def add_bbox_regression_targets(roidb):
     """Add information needed to train bounding-box regressors."""
