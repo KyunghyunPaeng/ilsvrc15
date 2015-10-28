@@ -34,6 +34,7 @@ class pascal_voc(datasets.imdb):
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
         self._image_ext = '.jpg'
         self._image_index = self._load_image_set_index()
+        self._wh = self._load_image_width_height()
         # Default to roidb handler
         self._roidb_handler = self.selective_search_roidb
 
@@ -78,6 +79,41 @@ class pascal_voc(datasets.imdb):
         with open(image_set_file) as f:
             image_index = [x.strip() for x in f.readlines()]
         return image_index
+    
+    def _load_image_width_height(self) :
+        cache_file = os.path.join(self.cache_path, self.name + '_img_wh.pkl')
+        if os.path.exists(cache_file):
+            with open(cache_file, 'rb') as fid:
+                img_wh = cPickle.load(fid)
+            print '{} image wh loaded from {}'.format(self.name, cache_file)
+            return img_wh
+        img_wh = []
+        for index in self._image_index :
+            wh = self.load_image_wh(index)
+            img_wh.append(wh)
+        with open(cache_file, 'wb') as fid:
+            cPickle.dump(img_wh, fid, cPickle.HIGHEST_PROTOCOL)
+        print 'wrote image wh to {}'.format(cache_file)
+        return img_wh
+
+    def load_image_wh(self, index):
+        """
+        Load the width and height
+        """
+        filename = os.path.join(self._data_path, 'Annotations', index + '.xml')
+        assert os.path.exists(filename), \
+                'Path does not exist: {}'.format(image_set_file)
+        def get_data_from_tag(node, tag):
+            return node.getElementsByTagName(tag)[0].childNodes[0].data
+
+        with open(filename) as f:
+            data = minidom.parseString(f.read())
+
+        size = data.getElementsByTagName('size')
+        iw = float(get_data_from_tag(size[0], 'width'))
+        ih = float(get_data_from_tag(size[0], 'height'))
+        out = (iw, ih)
+        return out
 
     def _get_default_path(self):
         """
