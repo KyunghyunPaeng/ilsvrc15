@@ -114,6 +114,51 @@ class AnchorTargetLayer(caffe.Layer):
             (all_anchors[:, 3] < im_info[0] + self._allowed_border)    # height
         )[0]
 
+        # imagenet dataset exception !!! (small images...)
+        # if there is not exist inside anchors, all weights are filled with zeros.
+        if len(inds_inside) == 0 :
+            inds_inside = np.where(
+                (all_anchors[:,0]==all_anchors[:,0]) &
+                (all_anchors[:,1]==all_anchors[:,1]) &
+                (all_anchors[:,2]==all_anchors[:,2]) &
+                (all_anchors[:,3]==all_anchors[:,3]) )[0]
+            anchors = all_anchors
+            labels = np.empty((len(inds_inside), ), dtype=np.float32)
+            labels.fill(-1)
+            bbox_targets = np.zeros((len(inds_inside), 4), dtype=np.float32)
+            bbox_inside_weights = np.zeros((len(inds_inside), 4), dtype=np.float32)
+            bbox_outside_weights = np.zeros((len(inds_inside), 4), dtype=np.float32)
+            # map up to original set of anchors
+            labels = _unmap(labels, total_anchors, inds_inside, fill=-1)
+            bbox_targets = _unmap(bbox_targets, total_anchors, inds_inside, fill=0)
+            bbox_inside_weights = _unmap(bbox_inside_weights, total_anchors, inds_inside, fill=0)
+            bbox_outside_weights = _unmap(bbox_outside_weights, total_anchors, inds_inside, fill=0)
+            # labels
+            labels = labels.reshape((1, height, width, A)).transpose(0, 3, 1, 2)
+            labels = labels.reshape((1, 1, A * height, width))
+            top[0].reshape(*labels.shape)
+            top[0].data[...] = labels
+            # bbox_targets
+            bbox_targets = bbox_targets \
+                .reshape((1, height, width, A * 4)).transpose(0, 3, 1, 2)
+            top[1].reshape(*bbox_targets.shape)
+            top[1].data[...] = bbox_targets
+            # bbox_inside_weights
+            bbox_inside_weights = bbox_inside_weights \
+                .reshape((1, height, width, A * 4)).transpose(0, 3, 1, 2)
+            assert bbox_inside_weights.shape[2] == height
+            assert bbox_inside_weights.shape[3] == width
+            top[2].reshape(*bbox_inside_weights.shape)
+            top[2].data[...] = bbox_inside_weights
+            # bbox_outside_weights
+            bbox_outside_weights = bbox_outside_weights \
+            .reshape((1, height, width, A * 4)).transpose(0, 3, 1, 2)
+            assert bbox_outside_weights.shape[2] == height
+            assert bbox_outside_weights.shape[3] == width
+            top[3].reshape(*bbox_outside_weights.shape)
+            top[3].data[...] = bbox_outside_weights
+            return
+
         if DEBUG:
             print 'total_anchors', total_anchors
             print 'inds_inside', len(inds_inside)
