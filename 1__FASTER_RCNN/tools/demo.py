@@ -33,6 +33,8 @@ CLASSES = ('__background__',
 
 NETS = {'vgg16': ('VGG16',
                   'VGG16_faster_rcnn_final.caffemodel'),
+        'bvlc': ('BVLC',
+                  'BVLC_faster_rcnn_final.caffemodel'),
         'zf': ('ZF',
                   'ZF_faster_rcnn_final.caffemodel')}
 

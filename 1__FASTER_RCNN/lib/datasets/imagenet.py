@@ -185,7 +185,7 @@ class imagenet(datasets.imdb):
                 y2 = ih-1
             if x2 <= x1 or y2 <= y1 : # can't define bbox
                 print index
-                assert True, \
+                assert False, \
                        'Cannot define bounding box'
           
             boxes[ix, :] = [x1, y1, x2, y2]
