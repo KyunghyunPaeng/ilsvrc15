@@ -1,4 +1,4 @@
-name: "BVLC"
+name: "IMAGENET_BVLC"
 layer {
   name: 'input-data'
   type: 'Python'

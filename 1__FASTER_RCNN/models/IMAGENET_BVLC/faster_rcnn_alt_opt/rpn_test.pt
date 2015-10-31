@@ -1,4 +1,4 @@
-name: "BVLC"
+name: "IMAGENET_BVLC"
 
 input: "data"
 input_shape {

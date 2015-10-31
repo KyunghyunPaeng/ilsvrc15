@@ -19,7 +19,7 @@ class imagenet():
         """
         Return the default path where IMAGENET is expected to be installed.
         """
-        return os.path.join('/data/IMAGENET', 'ILSVRC' + self._year)
+        return os.path.join('/data1/IMAGENET', 'ILSVRC' + self._year)
 
     def _load_image_set_index(self):
         """
@@ -53,6 +53,10 @@ class imagenet():
                 return False
             iw = float(self._get_data_from_tag(size[0], 'width')) 
             ih = float(self._get_data_from_tag(size[0], 'height')) 
+            if iw/ih > 5. or ih/iw > 5. : # illegal aspect ratio
+                return False
+            if iw < 50 or ih < 50 : # very small image
+                return False
             num_objs = len(objs)
             if num_objs is 0 :
                 return False

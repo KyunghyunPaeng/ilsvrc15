@@ -79,7 +79,7 @@ def get_solvers(net_name):
     solvers = [os.path.join(cfg.ROOT_DIR, 'models', *s) for s in solvers]
     # Iterations for each training stage
     max_iters = [80000, 40000, 80000, 40000]
-    # max_iters = [1333892, 84000, 1333892, 84000] # imagenet detection setting !
+    # max_iters = [1000000, 62500, 1000000, 62500] # imagenet detection setting !
     # max_iters = [100, 100, 100, 100]
     # Test prototxt for the RPN
     rpn_test_prototxt = os.path.join(

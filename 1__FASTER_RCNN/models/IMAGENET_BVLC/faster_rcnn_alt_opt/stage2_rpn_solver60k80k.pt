@@ -7,7 +7,7 @@ train_net: "models/IMAGENET_BVLC/faster_rcnn_alt_opt/stage2_rpn_train.pt"
 base_lr: 0.001
 lr_policy: "step"
 gamma: 0.1
-stepsize: 1000000 # 3 epoch
+stepsize: 670000 # 2 epoch
 display: 20
 average_loss: 100
 momentum: 0.9
