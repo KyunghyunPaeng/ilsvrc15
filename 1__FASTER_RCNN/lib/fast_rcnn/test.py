@@ -138,7 +138,7 @@ def im_detect(net, im, boxes=None):
         blobs['im_info'] = np.array(
             [[im_blob.shape[2], im_blob.shape[3], im_scales[0]]],
             dtype=np.float32)
-
+    
     # reshape network inputs
     net.blobs['data'].reshape(*(blobs['data'].shape))
     if cfg.TEST.HAS_RPN:
@@ -307,8 +307,15 @@ def test_net(net, imdb):
         with open(det_file, 'wb') as f:
             cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
 
-    print 'Applying NMS to all detections'
-    nms_dets = apply_nms(all_boxes, cfg.TEST.NMS)
+    det_nms_file = os.path.join(output_dir, 'detections_nms.pkl')
+    if os.path.exists(det_nms_file) :
+        with open(det_file, 'rb') as f:
+            nms_dets = cPickle.load(f)
+    else :
+        print 'Applying NMS to all detections'
+        nms_dets = apply_nms(all_boxes, cfg.TEST.NMS)
+        with open(det_nms_file, 'wb') as f:
+            cPickle.dump(nms_dets, f, cPickle.HIGHEST_PROTOCOL)
 
     print 'Evaluating detections'
     imdb.evaluate_detections(nms_dets, output_dir)

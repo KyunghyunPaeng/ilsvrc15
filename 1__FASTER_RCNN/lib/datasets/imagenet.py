@@ -18,6 +18,7 @@ import cPickle
 import subprocess
 import h5py
 import PIL
+
 class imagenet(datasets.imdb):
     def __init__(self, image_set, year):
         datasets.imdb.__init__(self, 'imagenet_' + year + '_' + image_set)
@@ -27,16 +28,17 @@ class imagenet(datasets.imdb):
         self._data_path = os.path.join( self._get_default_path(), 'Data', 'DET', self._image_set )
         self._annot_path = os.path.join( self._get_default_path(), 'Annotations', 'DET', self._image_set )
         if image_set is 'test' :
-            self._data_path = '' # no data files
             self._annot_path = '' # no gt files
         self._classes = ('__background__',) # always index 0
+        self._class_name = ('__background__',) # always index 0
         synsets = sio.loadmat( os.path.join(self._devkit_path,'data','meta_det.mat') )
         synsets = synsets['synsets'].squeeze()
         for i in range(200) :
-            self._classes += (str(synsets[i][1][0]),)
-        self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
+            self._classes += (str(synsets[i][2][0]),) 
+            self._class_name += (str(synsets[i][2][0]),)
+        self._class_to_ind = dict(zip(self._classes, xrange(self.num_classes)))
         self._image_ext = '.JPEG'
-        self._image_index = self._load_image_set_index()
+        self._image_index, self._image_id = self._load_image_set_index()
         self._wh = self._load_image_width_height()
         # Default to roidb handler
         self._roidb_handler = self.selective_search_roidb
@@ -47,11 +49,11 @@ class imagenet(datasets.imdb):
                        'top_k'    : 2000,
                        'use_diff' : False,
                        'rpn_file' : None}
-        
-        assert os.path.exists(self._annot_path), \
-                'IMAGENET annotation path does not exist: {}'.format(self._annot_path)
         assert os.path.exists(self._data_path), \
                 'IMAGENET data path does not exist: {}'.format(self._data_path)
+        if self._image_set != 'test' :
+            assert os.path.exists(self._annot_path), \
+                'IMAGENET annotation path does not exist: {}'.format(self._annot_path)
     
     def _get_default_path(self):
         """
@@ -84,7 +86,9 @@ class imagenet(datasets.imdb):
                 'Path does not exist: {}'.format(image_set_file)
         with open(image_set_file) as f:
             image_index = [x.split()[0] for x in f.readlines()]
-        return image_index
+        with open(image_set_file) as f:
+            image_id = [x.split()[1] for x in f.readlines()]
+        return image_index, image_id
     
     def _load_image_width_height(self) :
         cache_file = os.path.join(self.cache_path, self.name + '_img_wh.pkl')
@@ -106,19 +110,25 @@ class imagenet(datasets.imdb):
         """
         Load the width and height
         """
-        filename = os.path.join(self._annot_path, index + '.xml')
-        assert os.path.exists(filename), \
-                'Path does not exist: {}'.format(image_set_file)
-        def get_data_from_tag(node, tag):
-            return node.getElementsByTagName(tag)[0].childNodes[0].data
+        if self._image_set != 'test' :
+            filename = os.path.join(self._annot_path, index + '.xml')
+            assert os.path.exists(filename), \
+                'Path does not exist: {}'.format(filename)
+            def get_data_from_tag(node, tag):
+                return node.getElementsByTagName(tag)[0].childNodes[0].data
 
-        with open(filename) as f:
-            data = minidom.parseString(f.read())
+            with open(filename) as f:
+                data = minidom.parseString(f.read())
 
-        size = data.getElementsByTagName('size')
-        iw = float(get_data_from_tag(size[0], 'width'))
-        ih = float(get_data_from_tag(size[0], 'height'))
-        out = (iw, ih)
+            size = data.getElementsByTagName('size')
+            iw = float(get_data_from_tag(size[0], 'width'))
+            ih = float(get_data_from_tag(size[0], 'height'))
+            out = (iw, ih)
+        else :
+            filename = os.path.join(self._data_path, index + '.JPEG')
+            assert os.path.exists(filename), \
+                'Path does not exist: {}'.format(filename)
+            out = PIL.Image.open(filename).size
         return out
 
     def gt_roidb(self):
@@ -132,9 +142,11 @@ class imagenet(datasets.imdb):
             with open(cache_file, 'rb') as fid:
                 roidb = cPickle.load(fid)
             print '{} gt roidb loaded from {}'.format(self.name, cache_file)
+            assert len(roidb) == len(self._image_index)
             return roidb
         gt_roidb = [self._load_imagenet_annotation(index)
                     for index in self.image_index]
+        assert len(gt_roidb) == len(self._image_index)
         with open(cache_file, 'wb') as fid:
             cPickle.dump(gt_roidb, fid, cPickle.HIGHEST_PROTOCOL)
         print 'wrote gt roidb to {}'.format(cache_file)
@@ -278,11 +290,11 @@ class imagenet(datasets.imdb):
 
 
     def _write_imagenet_results_file(self, all_boxes, output_dir):
-        # VOCdevkit/results/VOC2007/Main/comp4-44503_det_test_aeroplane.txt
-        # path = os.path.join( output_dir, 'results', 'VOC' + self._year )
-        filename = output_dir + 'det_' + self._image_set + '.txt'
+        filename = output_dir + '/det_' + self._image_set + '.txt'
+        if os.path.exists(filename) :
+            return filename
         with open(filename, 'wt') as f:
-            for im_ind, index in enumerate(self.image_index):
+            for im_ind, index in enumerate(self._image_index):
                 for cls_ind, cls in enumerate(self.classes):
                     if cls == '__background__':
                         continue
@@ -290,17 +302,29 @@ class imagenet(datasets.imdb):
                     if dets == []:
                         continue
                     for k in xrange(dets.shape[0]):
-                        f.write('{:s} {:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.
-                            format(im_ind+1, cls_ind, dets[k, -1],
+                        f.write('{} {} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.
+                            format(self._image_id[im_ind], cls_ind, dets[k, -1],
                                    dets[k, 0], dets[k, 1] ,
                                    dets[k, 2], dets[k, 3] ))
         print 'Writing IMAGENET DET results file: {}'.format(filename)
+        return filename
     
+    def _do_matlab_eval(self, filename):
+        rm_results = self.config['cleanup']
+
+        path = os.path.join(os.path.dirname(__file__),
+                            'ILSVRCdevkit-matlab-wrapper')
+        cmd = 'cd {} && '.format(path)
+        cmd += '{:s} -nodisplay -nodesktop '.format(datasets.MATLAB)
+        cmd += '-r "dbstop if error; '
+        cmd += 'ilsvrc_det_eval(\'{:s}\',\'{:s}\'); quit;"' \
+               .format(self._devkit_path, filename)
+        print('Running:\n{}'.format(cmd))
+        status = subprocess.call(cmd, shell=True)
+
     def evaluate_detections(self, all_boxes, output_dir):
-        import pdb
-        pdb.set_trace()
-        self._write_imagenet_results_file(all_boxes, output_dir)
-        #self._do_matlab_eval(comp_id, output_dir)
+        filename = self._write_imagenet_results_file(all_boxes, output_dir)
+        #self._do_matlab_eval(filename)
 
     def competition_mode(self, on):
         if on:
