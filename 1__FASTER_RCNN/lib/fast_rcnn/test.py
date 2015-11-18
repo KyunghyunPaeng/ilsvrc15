@@ -201,6 +201,8 @@ def vis_detections(im, class_name, dets, thresh=0.3):
                               edgecolor='g', linewidth=3)
                 )
             plt.title('{}  {:.3f}'.format(class_name, score))
+            window = plt.get_current_fig_manager()
+            window.window.setGeometry(1600,500,640,480)
             plt.show()
 
 def apply_nms(all_boxes, thresh):
@@ -292,7 +294,7 @@ def test_net(net, imdb):
         
                 if 0:
                     keep = nms(all_boxes[j][i], 0.3)
-                    vis_detections(im, imdb.classes[j], all_boxes[j][i][keep, :])
+                    vis_detections(im, imdb.classes[j], all_boxes[j][i][keep, :], 0.6)
             _t['misc'].toc()
         
             print 'im_detect: {:d}/{:d} {:.3f}s {:.3f}s' \
