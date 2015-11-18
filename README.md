@@ -1,10 +1,9 @@
-# ilsvrc 15 experiments
+# experiment-toolkit for ilsvrc15
 
-CLS-LOC & DET task
-
-0__ATTENTION ( DET & CLS-LOC )
-
-1__FASTER_RCNN ( DET )
-
-2__TOP5 ( CLS-LOC )
+1. attention toolkit [DET & CLS-LOC]
+: for training attention network
+2. faster rcnn toolkit [DET]
+: for training faster rcnn
+3. top5 toolkit [CLS-LOC]
+: for top5 error
 
